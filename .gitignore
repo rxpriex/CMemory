@@ -4,6 +4,9 @@ ignore everything by default
 # Allow .asm and .bat and gitignore files
 !*.asm
 !*.def
+!*.c
+!*.h
+!*.cpp
 !.gitignore
 !*.gitkeep
 
