@@ -1,0 +1,11 @@
+ignore everything by default
+*
+
+# Allow .asm and .bat and gitignore files
+!*.asm
+!*.def
+!.gitignore
+!*.gitkeep
+
+# Allow directories (so Git can track allowed files inside them)
+!*/
