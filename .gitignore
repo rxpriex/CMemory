@@ -1,14 +1,219 @@
-ignore everything by default
-*
+# General Ignore Patterns
+# -----------------------
 
-# Allow .asm and .bat and gitignore files
-!*.asm
-!*.def
-!*.c
-!*.h
-!*.cpp
-!.gitignore
-!*.gitkeep
+# Ignore backup files and temporary files
+*~
+*.bak
+*.tmp
+*.swp
+*.swo
 
-# Allow directories (so Git can track allowed files inside them)
-!*/
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+.fleet/
+*.iml
+
+# Ignore user-specific configuration files
+*.user
+*.userproj
+
+# Ignore build directories
+build/
+dist/
+out/
+bin/
+obj/
+target/
+
+# Ignore dependency directories
+node_modules/
+vendor/
+.env/
+.venv/
+venv/
+
+# Ignore logs and debug files
+*.log
+*.log.*
+*.pid
+*.seed
+
+# Ignore compiled binaries and executables
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.o
+*.obj
+*.out
+
+# Ignore test coverage and profiling data
+*.gcno
+*.gcda
+*.gcov
+*.profraw
+
+# Ignore package manager lock files (if not needed)
+# Uncomment if you don't want to commit these
+# package-lock.json
+# yarn.lock
+# requirements.txt (if generated)
+
+# Language-Specific Ignore Patterns
+# ---------------------------------
+
+# C and C++
+*.o
+*.obj
+*.exe
+*.lib
+*.ilk
+*.pdb
+*.idb
+*.tlog
+*.sdf
+*.suo
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile  # Generated Makefile, not custom ones
+cmake-build-*/
+
+# Make
+*.mk
+*.make
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.coverage
+coverage.xml
+*.ipynb_checkpoints/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+gradlew
+gradlew.bat
+*.jfr
+
+# Assembly
+*.o
+*.obj
+*.bin
+
+# Go
+*.exe
+*.test
+go.sum
+
+# Rust
+Cargo.lock  # Exclude unless needed
+target/
+
+# JavaScript/TypeScript
+dist/
+build/
+*.js.map
+*.tsbuildinfo
+
+# Build System-Specific Ignore Patterns
+# -------------------------------------
+
+# Gradle (Java)
+.gradle/
+build/
+gradlew
+gradlew.bat
+
+# Maven (Java)
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Ant (Java)
+build.xml
+dist/
+
+# SCons (Python/C/C++)
+.sconsign.dblite
+.sconf_temp/
+
+# Meson (C/C++)
+meson-info/
+meson-logs/
+meson-private/
+builddir/
+
+# Ninja
+.ninja_deps
+.ninja_log
+
+# Documentation and Testing Artifacts
+# -----------------------------------
+
+# Doxygen
+docs/
+html/
+latex/
+
+# Testing
+test-results/
+reports/
+*.tap
+*.junit
+
+# Miscellaneous
+# -------------
+
+# Ignore IDE-specific run configurations (if not shared)
+.run/
+
+# Ignore environment-specific files
+*.env
+.env.local
+.env.*.local
+
+# Ignore personal notes or TODOs
+NOTES
+TODO
+*.md.bak
+
+# Exceptions for Important Build System Files
+# -------------------------------------------
+
+# Keep custom Makefiles if you use them
+!Makefile  # Include if you write a custom Makefile
+!*.mk      # Include custom Make include files
+
+# Keep custom CMake scripts
+!*.cmake
+!cmake/*.cmake
+
+# Keep project-specific configuration files
+!*.config
+!*.conf
+
+# Keep documentation source files
+!docs/*.md
+!docs/*.rst
