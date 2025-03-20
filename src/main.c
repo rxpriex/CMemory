@@ -4,19 +4,18 @@
 
 int main(int argc, char **argv) {
 
-    int* i = rxalloc(sizeof(int));
-    int* i1 = rxalloc(sizeof(int));
+    int *i = rxalloc(sizeof(int));
+    int *i1 = rxalloc(sizeof(int));
     *i = 5;
 
-    get_debug_outputs();
+    //get_debug_outputs();
 
     rxfree(i);
 
-    get_debug_outputs();
+    //get_debug_outputs();
 
-    while(1){
-        printf("%lu\n",get_assigned_memory_size(CACHED_MEMORY));
-        void* vd = rxalloc(16);
+    while (1) {
+        void *vd = rxalloc(16);
         rxfree(vd);
     }
 
