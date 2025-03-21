@@ -94,6 +94,25 @@ static void assign_memblock_to_target(_memory_block *target_block,
 }
 
 /**
+ * @brief Adjusts the targeted memoryblock to the correct size.
+ * @param target The targeted memoryblock to be adjusted.
+ */
+void adjust_memblock(_memory_block* target){
+
+}
+
+/**
+ * @brief Searches for a fitting memoryblock from the cache.
+ * @param size_to_find 32bit integer with the targeted blocksize.
+ * @return Returns a adjusted memoryblock from cache or NULL there is none.
+ */
+_memory_block* find_fitting_memblock(uint32 size_to_find){
+  
+
+  return NULL;
+}
+
+/**
  * @brief Allocates memory and adds it to the heap list.
  * @param size_to_allocate Size of memory to allocate in bytes.
  * @param allocation_flags Flags for allocation (stored but unused).
@@ -101,6 +120,9 @@ static void assign_memblock_to_target(_memory_block *target_block,
  */
 void *__attribute__((malloc)) assign_memory(uint32 size_to_allocate,
                                             uint8 allocation_flags) {
+
+
+  
   // Allocate space for both the block header and the usable memory
   void *memory = global_alloc(size_to_allocate + sizeof(_memory_block));
   if (memory == NULL) {
