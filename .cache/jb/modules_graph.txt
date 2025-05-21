@@ -1,5 +1,0 @@
-2
-0
-{"Hash":"","Name":"","Path":"C:\\Users\\Rxpriex\\Desktop\\VRepos\\CMemory\\src\\main.c"}
-{"Hash":"","Name":"","Path":"C:\\Users\\Rxpriex\\Desktop\\VRepos\\CMemory\\src\\Memory.c"}
-0
