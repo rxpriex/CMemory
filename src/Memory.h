@@ -71,8 +71,8 @@ extern uint32 get_assigned_memory_size(uint8 flags)
 #endif
 
 /** @brief Macro to allocate memory with default flags */
-#define rxalloc(value) assign_memory(value, 0)
+#define rxalloc(value) assign_memory(sizeof(value), 0)
 /** @brief Macro to deallocate memory */
-#define rxfree unassign_memory
+#define rxfree(value) unassign_memory(value)
 
 #endif // MEMORY_H

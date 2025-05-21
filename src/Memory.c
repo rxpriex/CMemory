@@ -3,7 +3,6 @@
 #include <stdlib.h> // For exit
 #include <string.h> // For memset
 
-
 #ifdef _WIN32
 #include <windows.h> // For VirtualAlloc, VirtualFree
 #elif defined(__linux__)
@@ -39,7 +38,8 @@ void __attribute__((noreturn)) critical_error(short err) {
  * or CACHED_MEMORY).
  * @return Total size of the memory blocks in the specified pool in bytes.
  */
-uint32 __attribute__((always_inline)) get_assigned_memory_size(uint8 flags) {
+inline uint32 __attribute__((always_inline))
+get_assigned_memory_size(uint8 flags) {
   _memory_block *current = (flags & ALLOCATED_MEMORY) ? heap
                            : (flags & CACHED_MEMORY)  ? fm_cache
                                                       : NULL;
@@ -94,11 +94,28 @@ static void assign_memblock_to_target(_memory_block *target_block,
 }
 
 /**
- * @brief Adjusts the targeted memoryblock to the correct size.
- * @param target The targeted memoryblock to be adjusted.
+ * @brief Removes a memory block from a linked list.
+ * @param target_block Memory block to remove.
+ * @param target_pointer Pointer to the tail of the list.
+ * @param target_pool Pointer to the head of the list.
  */
-void adjust_memblock(_memory_block* target){
+static void unassign_memblock_from_target(_memory_block *target_block,
+                                          _memory_block **target_pointer,
+                                          _memory_block **target_pool) {
+  if (target_block->prev != NULL) {
+    target_block->prev->next = target_block->next;
+  } else {
+    *target_pool = target_block->next;
+  }
 
+  if (target_block->next != NULL) {
+    target_block->next->prev = target_block->prev;
+  } else {
+    *target_pointer = target_block->prev;
+  }
+
+  target_block->prev = NULL;
+  target_block->next = NULL;
 }
 
 /**
@@ -106,10 +123,34 @@ void adjust_memblock(_memory_block* target){
  * @param size_to_find 32bit integer with the targeted blocksize.
  * @return Returns a adjusted memoryblock from cache or NULL there is none.
  */
-_memory_block* find_fitting_memblock(uint32 size_to_find){
-  
+_memory_block *find_fitting_memblock(uint32 size_to_find) {
+  int mTotalSize = fm_cache->block_size + sizeof(_memory_block);
+  _memory_block *pResultChain = fm_cache;
+  _memory_block *pHead = fm_cache;
+  if (mTotalSize >= size_to_find) {
+    goto Return_Block;
+  }
+
+  while ((pHead = pHead->next) != NULL) {
+    mTotalSize += pHead->block_size + sizeof(_memory_block);
+    if (mTotalSize >= size_to_find) {
+      goto Return_Block;
+    }
+  }
 
   return NULL;
+
+Return_Block:
+  pResultChain->block_size = mTotalSize;  
+  _memory_block* pResult = pResultChain;  
+
+  while (pResultChain != pHead) {
+    unassign_memblock_from_target(pResultChain, &_FMCP, &fm_cache);
+    pResultChain = pResultChain->next;    
+  }
+  unassign_memblock_from_target(pResultChain, &_FMCP, &fm_cache);
+  assign_memblock_to_target(pResultChain, &_HP, &heap);
+  return pHead;
 }
 
 /**
@@ -120,15 +161,25 @@ _memory_block* find_fitting_memblock(uint32 size_to_find){
  */
 void *__attribute__((malloc)) assign_memory(uint32 size_to_allocate,
                                             uint8 allocation_flags) {
+  void *memory;
 
+  if (allocation_flags & ALLOCATED_MEMORY)
+    goto Allocation_Process;
 
-  
+  // Search for an adequately sized Memory Block in cache
+  if (fm_cache && (memory = find_fitting_memblock(
+                       size_to_allocate + sizeof(_memory_block))) != NULL)
+    goto Block_Adjustment;
+  else if (allocation_flags & CACHED_MEMORY)
+    critical_error(7); // Forced to use cached memory but it is not sufficient
+
+Allocation_Process:
   // Allocate space for both the block header and the usable memory
-  void *memory = global_alloc(size_to_allocate + sizeof(_memory_block));
+  memory = global_alloc(size_to_allocate + sizeof(_memory_block));
   if (memory == NULL) {
     critical_error(2); // Allocation failure
   }
-
+Block_Adjustment:
   _memory_block *block = (_memory_block *)memory;
   block->block_size = size_to_allocate;
   block->flags = allocation_flags;
@@ -155,31 +206,6 @@ void global_dealloc(void *ptr) {
   printf("Failed: Unsupported OS\n");
   critical_error(1);
 #endif
-}
-
-/**
- * @brief Removes a memory block from a linked list.
- * @param target_block Memory block to remove.
- * @param target_pointer Pointer to the tail of the list.
- * @param target_pool Pointer to the head of the list.
- */
-static void unassign_memblock_from_target(_memory_block *target_block,
-                                          _memory_block **target_pointer,
-                                          _memory_block **target_pool) {
-  if (target_block->prev != NULL) {
-    target_block->prev->next = target_block->next;
-  } else {
-    *target_pool = target_block->next;
-  }
-
-  if (target_block->next != NULL) {
-    target_block->next->prev = target_block->prev;
-  } else {
-    *target_pointer = target_block->prev;
-  }
-
-  target_block->prev = NULL;
-  target_block->next = NULL;
 }
 
 /**
